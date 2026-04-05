@@ -34,15 +34,16 @@ export default function RadarChart({ spheres, size }: Props) {
   function getPoints(values: number[]): string {
     return values
       .map((val, i) => {
-        const r = (val / MAX_LEVEL) * maxRadius;
+        const safe = Number(val) || 0;
+        const r = (safe / MAX_LEVEL) * maxRadius;
         const { x, y } = polarToCartesian(center, center, r, i * angleStep);
-        return `${x},${y}`;
+        return `${x.toFixed(2)},${y.toFixed(2)}`;
       })
       .join(" ");
   }
 
-  const currentValues = spheres.map((s) => s.current_level);
-  const targetValues = spheres.map((s) => s.target_level);
+  const currentValues = spheres.map((s) => Number(s.current_level) || 0);
+  const targetValues = spheres.map((s) => Number(s.target_level) || 1);
 
   return (
     <View style={{ alignItems: "center" }}>
@@ -106,7 +107,8 @@ export default function RadarChart({ spheres, size }: Props) {
 
         {/* Data points */}
         {currentValues.map((val, i) => {
-          const r = (val / MAX_LEVEL) * maxRadius;
+          const safe = Number(val) || 0;
+          const r = (safe / MAX_LEVEL) * maxRadius;
           const { x, y } = polarToCartesian(center, center, r, i * angleStep);
           return (
             <Circle
